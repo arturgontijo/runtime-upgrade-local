@@ -6,5 +6,4 @@ node_modules/
 artifacts/
 zombienet/bin/*
 !zombienet/bin/.gitkeep
-zombienet/chain-specs/
 .chopsticks-db-*.sqlite*
