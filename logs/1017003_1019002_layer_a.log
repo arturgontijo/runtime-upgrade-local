@@ -1,0 +1,61 @@
+AssetHubUpgrade npm run chopsticks:layer-a
+
+> assethubupgrade@1.0.0 chopsticks:layer-a
+> node scripts/layer-a-smoke.mjs
+
+[16:22:52.378] INFO: Statemint Alphanet RPC listening on http://[::]:13102 and ws://[::]:13102
+    app: "chopsticks"
+
+[layer-a-smoke] Connecting to parachain from Chopsticks log, port 13102
+        chopsticks::executor  TRACE: [0] Calling Metadata_metadata_versions
+        chopsticks::executor  TRACE: [0] Completed Metadata_metadata_versions
+        chopsticks::executor  TRACE: [1] Calling Metadata_metadata_at_version
+        chopsticks::executor  TRACE: [1] Completed Metadata_metadata_at_version
+        chopsticks::executor  TRACE: [2] Calling Metadata_metadata
+        chopsticks::executor  TRACE: [2] Completed Metadata_metadata
+[16:22:53.921] INFO: Moonbase Relay Testnet RPC listening on http://[::]:13103 and ws://[::]:13103
+    app: "chopsticks"
+[16:22:55.255] INFO (block-builder): Statemint Alphanet building #15,958,721
+    app: "chopsticks"
+    number: 15958721
+    extrinsics: []
+    umpCount: 0
+        chopsticks::executor  TRACE: [4] Calling Core_initialize_block
+        chopsticks::executor  TRACE: [5] Calling Metadata_metadata
+        chopsticks::executor  TRACE: [5] Completed Metadata_metadata
+      runtime::frame-support   INFO: [4] 🐥 New pallet "WeightReclaim" detected in the runtime. The pallet has no defined storage version, so the on-chain version is being initialized to StorageVersion(0).
+      runtime::frame-support   INFO: [4] 🐥 New pallet "MultiBlockMigrations" detected in the runtime. Initializing the on-chain storage version to match the storage version defined in the pallet: StorageVersion(0)
+[16:22:57.129] INFO (xcm): Connected relaychain 'Moonbase Relay Testnet' with parachain 'Statemint Alphanet'
+    app: "chopsticks"
+      runtime::frame-support   INFO: [4] 🐥 New pallet "SnowbridgeSystemFrontend" detected in the runtime. The pallet has no defined storage version, so the on-chain version is being initialized to StorageVersion(0).
+      runtime::frame-support   INFO: [4] 🐥 New pallet "AssetRewards" detected in the runtime. The pallet has no defined storage version, so the on-chain version is being initialized to StorageVersion(0).
+               runtime::nfts   INFO: [4] Running migration with in-code storage version StorageVersion(1) / onchain StorageVersion(1)
+               runtime::nfts   INFO: [4] Migration did not execute. This probably should be removed
+   frame_support::migrations   WARN: [4] 🚚 Pallet "CollatorSelection" VersionedMigration migration 1->2 can be removed; on-chain is already at StorageVersion(2).
+           runtime::multisig   INFO: [4] [15958720] ✍️ MigrateToV1 should be removed
+   asset_hub_westend_runtime   INFO: [4] Removing holds for account with bad hold
+   asset_hub_westend_runtime  ERROR: [4] Failed to destroy undecodable NFT item: Module(ModuleError { index: 52, error: [20, 0, 0, 0], message: Some("UnknownItem") })
+   frame_support::migrations   WARN: [4] 🚚 Pallet "XcmpQueue" VersionedMigration migration 3->4 can be removed; on-chain is already at StorageVersion(5).
+   frame_support::migrations   WARN: [4] 🚚 Pallet "XcmpQueue" VersionedMigration migration 4->5 can be removed; on-chain is already at StorageVersion(5).
+   frame_support::migrations   INFO: [4] 🚚 Pallet "Session" VersionedMigration migrating storage version from 0 to 1.
+      frame_support::storage  ERROR: [4] (key, value) failed to decode at [227, 143, 24, 82, 7, 73, 138, 187, 92, 33, 61, 15, 176, 89, 179, 216, 122, 90, 211, 150, 188, 37, 100, 179, 116, 38, 209, 94, 184, 55, 194, 80, 133, 149, 2, 47, 173, 5, 121, 213, 126, 21, 45, 86, 164, 195, 130, 253, 5, 0, 0, 0, 0, 0, 0, 0]: Error
+      frame_support::storage  ERROR: [4] (key, value) failed to decode at [227, 143, 24, 82, 7, 73, 138, 187, 92, 33, 61, 15, 176, 89, 179, 216, 122, 90, 211, 150, 188, 37, 100, 179, 116, 38, 209, 94, 184, 55, 194, 80, 164, 245, 206, 214, 102, 137, 87, 187, 42, 154, 149, 78, 126, 80, 245, 181, 4, 0, 0, 0, 0, 0, 0, 0]: Error
+   frame_support::migrations   INFO: [4] 🚚 Pallet "AuraExt" VersionedMigration migrating storage version from 0 to 1.
+      runtime::frame-support   INFO: [4] ⚠️ MultiBlockMigrations declares internal migrations (which *might* execute). On-chain `StorageVersion(0)` vs in-code storage version `StorageVersion(0)`
+        chopsticks::executor  TRACE: [6] Calling BlockBuilder_apply_extrinsic
+             runtime::system  TRACE: [6] Used block weight: PerDispatchClass { normal: Weight { ref_time: 0, proof_size: 0 }, operational: Weight { ref_time: 0, proof_size: 0 }, mandatory: Weight { ref_time: 7903509000, proof_size: 120441 } }
+             runtime::system  TRACE: [6] Used block length: 11
+        chopsticks::executor  TRACE: [6] Completed BlockBuilder_apply_extrinsic
+        chopsticks::executor  TRACE: [7] Calling Metadata_metadata
+        chopsticks::executor  TRACE: [8] Calling BlockBuilder_apply_extrinsic
+             runtime::system  TRACE: [8] Used block weight: PerDispatchClass { normal: Weight { ref_time: 0, proof_size: 0 }, operational: Weight { ref_time: 0, proof_size: 0 }, mandatory: Weight { ref_time: 8310116000, proof_size: 127602 } }
+             runtime::system  TRACE: [8] Used block length: 3655
+        chopsticks::executor  TRACE: [8] Completed BlockBuilder_apply_extrinsic
+        chopsticks::executor  TRACE: [9] Calling BlockBuilder_finalize_block
+           pallet_migrations  DEBUG: [9] Progressing MBM #0
+             runtime::system  DEBUG: [9] [15958721] 2 extrinsics, length: 3655 (normal 0%, op: 0%, mandatory 0%) / normal weight:Weight(ref_time: 0, proof_size: 0) (ref_time: 0%, proof_size: 0%) op weight Weight(ref_time: 0, proof_size: 0) (ref_time 0%, proof_size 0%) / mandatory weight Weight(ref_time: 8449587383, proof_size: 199165) (ref_time: 0%, proof_size: 0%)
+        chopsticks::executor  TRACE: [9] Completed BlockBuilder_finalize_block
+
+Layer A: runtime spec_version after dev_newBlock: 1019002
+system.lastRuntimeUpgrade: 1019002 westmint
+Layer A OK.

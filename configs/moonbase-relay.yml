@@ -1,0 +1,5 @@
+endpoint: wss://services.api.moonbase.moonbeam.network/moonbase/relay
+mock-signature-host: true
+port: 13101
+db: ./.chopsticks-db-moonbase-relay.sqlite
+runtime-log-level: 5

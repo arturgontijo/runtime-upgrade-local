@@ -1,0 +1,10 @@
+endpoint: wss://services.api.moonbase.moonbeam.network/moonbase/statemint
+mock-signature-host: true
+port: 13100
+db: ./.chopsticks-db-moonbase-asset-hub.sqlite
+runtime-log-level: 5
+
+# Uncomment to prefetch hot pallets before large migrations (adjust per upgrade):
+# prefetch-storages:
+#   - System.Account
+#   - Assets

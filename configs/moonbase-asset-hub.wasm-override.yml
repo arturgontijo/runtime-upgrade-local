@@ -1,0 +1,8 @@
+# Requires WESTMINT_RUNTIME_WASM pointing at a .compact.compressed.wasm file.
+# For upgrade rehearsal to spec 1017007, set WESTMINT_RUNTIME_WASM to that build output.
+endpoint: wss://services.api.moonbase.moonbeam.network/moonbase/statemint
+mock-signature-host: true
+port: 13100
+db: ./.chopsticks-db-moonbase-asset-hub-override.sqlite
+runtime-log-level: 5
+wasm-override: ${env.WESTMINT_RUNTIME_WASM}
