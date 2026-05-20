@@ -83,7 +83,7 @@
           "nextAssetId": null
         },
         "parachainInfo": {
-          "parachainId": 1000
+          "parachainId": 1001
         },
         "parachainSystem": {},
         "polkadotXcm": {
@@ -123,7 +123,7 @@
   },
   "id": "asset_hub_westend_local",
   "name": "Asset Hub Westend Local",
-  "para_id": 1000,
+  "para_id": 1001,
   "properties": {
     "tokenDecimals": 12,
     "tokenSymbol": "UNIT"

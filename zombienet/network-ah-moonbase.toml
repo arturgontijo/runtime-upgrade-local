@@ -1,0 +1,130 @@
+# Local Zombienet for Asset Hub Westend upgrade rehearsal.
+#
+# Genesis runtime versions (matching Moonbase production):
+#   - relay     : westend     spec 1019002 (chain-spec from westend_runtime-v1019002.compact.compressed.wasm)
+#   - parachain : westmint    spec 1017003 (chain-spec from asset-hub-westend_runtime-v1017003.compact.compressed.wasm)
+#
+# Run `zombienet/scripts/setup.sh` (or `npm run zombienet:setup`) once to
+# fetch binaries (polkadot-stable2506) and generate the chainspecs.
+#
+# Spawn from inside zombienet/ so relative paths resolve correctly:
+#   cd zombienet && npx --yes @zombienet/cli@latest spawn network.toml --provider native
+
+[settings]
+provider           = "native"
+timeout            = 1000
+node_spawn_timeout = 240
+
+[relaychain]
+chain_spec_path = "./chain-specs/westend-local.json"
+default_command = "./bin/polkadot"
+# NOTE: Do not add `default_args = ["--no-mdns"]` here — Zombienet already injects `--no-mdns`
+# on relay binaries; repeating it makes polkadot exit with "cannot be used multiple times".
+
+  [[relaychain.nodes]]
+  name      = "alice"
+  rpc_port  = 9944
+  validator = true
+
+  [[relaychain.nodes]]
+  name      = "bob"
+  rpc_port  = 9945
+  validator = true
+
+  [[relaychain.nodes]]
+  name      = "charlie"
+  rpc_port  = 9946
+  validator = true
+
+  [[relaychain.nodes]]
+  name      = "dave"
+  rpc_port  = 9947
+  validator = true
+
+[[parachains]]
+id              = 1001
+add_to_genesis  = true
+cumulus_based   = true
+chain_spec_path = "./chain-specs/asset-hub-westend-local.json"
+
+  # Mirror `polkadot-sdk/cumulus/zombienet/examples/asset_hub_westend_local_network.toml`:
+  # four relay validators plus multiple collators — small two-validator nets often never
+  # finalize parachain candidates on modern Westend-style configs.
+
+  [[parachains.collators]]
+  name         = "alice"
+  rpc_port     = 9988
+  command      = "./bin/polkadot-parachain"
+  validator    = true
+  invulnerable = true
+  # Embedded relay: `--no-mdns` only after `--`; `--force-authoring` for small nets.
+  args         = ["--force-authoring", "--", "--no-mdns"]
+
+  [[parachains.collators]]
+  name         = "bob"
+  rpc_port     = 9989
+  command      = "./bin/polkadot-parachain"
+  validator    = true
+  invulnerable = true
+  args         = ["--force-authoring", "--", "--no-mdns"]
+
+[[parachains]]
+id              = 1000
+add_to_genesis  = true
+cumulus_based   = true
+chain           = "moonbase-local"
+
+  [parachains.genesis.runtimeGenesis.config.authorFilter]
+  eligibleCount = 1
+
+  [[parachains.collators]]
+  name         = "alith"
+  rpc_port     = 8800
+  command      = "./bin/moonbeam"
+  args = [
+    "--no-hardware-benchmarks",
+    "--no-telemetry",
+    "--authoring=slot-based",
+    "--pool-type=fork-aware",
+    "--",
+    "--no-mdns",
+  ]
+
+  [[parachains.collators]]
+  name         = "baltathar"
+  rpc_port     = 8801
+  command      = "./bin/moonbeam"
+  args = [
+    "--no-hardware-benchmarks",
+    "--no-telemetry",
+    "--authoring=slot-based",
+    "--pool-type=fork-aware",
+    "--",
+    "--no-mdns",
+  ]
+
+# HRMP at genesis is intentionally OFF here. Opening 1000 <-> 1001 before either parachain
+# has produced block #1 makes cumulus `set_validation_data` panic (DMQ / HRMP MQC head mismatch
+# at the first epoch boundary). Once both chains advance past block #0, open channels on the
+# running relay:
+#
+#   npm run zombienet:open-hrmp
+#
+# (relay sudo → hrmp.forceOpenHrmpChannel both ways; see zombienet/scripts/open-hrmp-channels.mjs)
+#
+# [[hrmp_channels]]
+# sender = 1_000
+# recipient = 1_001
+# max_capacity = 8
+# max_message_size = 8_192
+
+# [[hrmp_channels]]
+# sender = 1_001
+# recipient = 1_000
+# max_capacity = 8
+# max_message_size = 8_192
+
+[types.Header]
+number = "u64"
+parent_hash = "Hash"
+post_state = "Hash"

@@ -181,6 +181,35 @@ ZombieNet adds `--no-mdns` on **`polkadot`** validators — **do not** add `defa
 
 The embedded relay inside the collator still needs **`--no-mdns` after `--`** once — see `args` under each `[[parachains.collators]]` entry in `network.toml`.
 
+### `set_validation_data` / `DMQ head mismatch` / `HRMP MQC` panic at relay epoch 1
+
+Collators often stay at **#0** until the relay finishes **epoch 0** (~20 blocks with default epoch length), then try block **#1** and panic if inherent data does not match runtime storage.
+
+Common causes in **this** repo:
+
+1. **Genesis `[[hrmp_channels]]` with two parachains** — both must produce block #1 before HRMP queue heads line up. Leave HRMP commented out in `network.toml` until both chains advance; open channels later via governance/XCM (see Moonbeam `moonbase-asset-hub-westend.toml` for a full teleport stack).
+2. **Relay vs collator binary skew** — `polkadot` **1.21.x** with `polkadot-parachain` **1.19.x** can disagree on messaging proofs. After `setup.sh` changes, refresh the collator: `rm -f zombienet/bin/polkadot-parachain && npm run zombienet:setup` (default **`PARACHAIN_BIN_TAG=polkadot-stable2512-3`**).
+3. **Asset Hub upgrade only** — use `npm run zombienet:spawn:ah-only` and `PARA_ID=1000 npm run zombienet:setup` (single para, no Moonbase).
+
+### Opening HRMP after both parachains produce blocks
+
+Genesis `[[hrmp_channels]]` in Zombienet is disabled in `network-ah-moonbase.toml` so block #1 can succeed. After **both** Moonbase (1000) and Asset Hub (1001) have moved past block #0:
+
+```bash
+npm run zombienet:open-hrmp
+# or: node zombienet/scripts/open-hrmp-channels.mjs ws://127.0.0.1:9944
+```
+
+This submits **`sudo(utility.batch([hrmp.forceOpenHrmpChannel(1000→1001), hrmp.forceOpenHrmpChannel(1001→1000)]))`** on the relay. `westend-local` uses **`EnsureRoot`** as HRMP channel manager, so Alice (`//Alice`) via genesis **`sudo.key`** is sufficient.
+
+Defaults match the commented Zombienet genesis channels: `MAX_CAPACITY=8`, `MAX_MESSAGE_SIZE=8192` (must stay ≤ relay `HostConfiguration` caps in `westend-local.json`).
+
+Channels are often visible in `hrmp.hrmpChannels` after the **next relay session** (~20 blocks with fast-runtime WASM, much longer with the published relay WASM). The script polls up to `WAIT_OPEN_MS` (default 3 minutes).
+
+**Polkadot.js Apps (manual):** connect to relay `ws://127.0.0.1:9944`, Developer → Sudo → `hrmp.forceOpenHrmpChannel` with sender/recipient/capacity/size, twice (both directions), or one `utility.batch` wrapped in `sudo`.
+
+**Parachain-initiated path (production-shaped):** one chain calls `hrmpInitOpenChannel`, the other `hrmpAcceptOpenChannel` (two extrinsics + session delay). For local rehearsal, relay `forceOpenHrmpChannel` is simpler.
+
 ### Parachain stays at block #0; relay peers OK; no `Genesis mismatch`
 
 **Epoch / session**: with the **published** relay WASM, BABE epochs stay long (compile-time constant — often **~600 slots**). Prefer **`USE_FAST_WESTEND_RUNTIME=1`** plus a **`fast-runtime`** WASM build (see above) if you need short epochs locally. Waiting for a natural epoch flip is usually **not** what fixes a stuck genesis chain; if nothing lands after many relay blocks, fix topology first.
