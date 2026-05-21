@@ -2,6 +2,8 @@
 
 Scripts and contracts to exercise **`pallet_erc20_xcm_bridge`** on a local Westend relay + **AH-Westend (1001)** + **Moonbase (1000)** network.
 
+**Step-by-step commands only:** [WORKFLOW.md](WORKFLOW.md).
+
 ## Runtime wiring (Moonbase)
 
 - **`pallet_erc20_xcm_bridge`**: root-gated `TeleportableErc20s` whitelist; `Erc20TeleportTransactor` moves tokens through the runtime checking account `H160(*b"erc20-teleport-check")`.
